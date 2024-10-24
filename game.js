@@ -39,8 +39,8 @@ const GameController = (function () {
   return function (player1Name, player2Name) {
     // Setup variables
     const gameboard = Gameboard();
-    const player1 = Player(player1Name, "X");
-    const player2 = Player(player2Name, "O");
+    const player1 = Player(player1Name ? player1Name : "Player1", "X");
+    const player2 = Player(player2Name ? player2Name : "Player2", "O");
     // Keep track of state
     let currentPlayer = player1;
     let gameWon = false;
@@ -82,7 +82,8 @@ const GameController = (function () {
     // Playing a turn
     const playTurn = (index) => {
       if (gameWon) {
-        console.log("Game Over. Please reset the game");
+        alert("Game Over. Please reset the game");
+        return;
       }
 
       if (gameboard.placeMarker(index, currentPlayer.marker)) {
@@ -91,37 +92,21 @@ const GameController = (function () {
         // Check for winner
         const winner = checkWinner();
         if (winner) {
-          console.log(`${winner.name} won the game!`);
+          alert(`${winner.name} won the game!`);
+          gameWon = true;
           return;
         }
 
         // Check for draw
         if (checkDraw()) {
-          console.log("It's a draw!");
+          alert("It's a draw!");
           return;
         }
 
         switchTurns();
       } else {
-        console.log("Spot is taken! Please try again.");
+        alert("Spot is taken! Please try again.");
       }
-    };
-
-    // Printing the board to console
-    const printBoard = () => {
-      const gameboardCopy = gameboard.getBoard();
-      const gameContainer = document.querySelector(".game-container");
-      gameboardCopy.forEach((item, index) => {
-        const cell = document.createElement("div");
-        cell.innerText = item || "";
-        cell.classList.add("cell");
-        cell.addEventListener("click", () => {
-          playTurn(index);
-          gameContainer.innerHTML = "";
-          printBoard();
-        });
-        gameContainer.appendChild(cell);
-      });
     };
 
     // Resetting the game
@@ -129,10 +114,10 @@ const GameController = (function () {
       gameboard.resetBoard();
       gameWon = false;
       currentPlayer = player1;
-      console.log("Game has been reset.");
+      alert("Game has been reset.");
     };
 
-    return { playTurn, printBoard, resetGame };
+    return { playTurn, resetGame, gameboard, playTurn };
   };
 })();
 
