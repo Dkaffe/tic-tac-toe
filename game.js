@@ -109,7 +109,19 @@ const GameController = (function () {
 
     // Printing the board to console
     const printBoard = () => {
-      console.log(gameboard.getBoard());
+      const gameboardCopy = gameboard.getBoard();
+      const gameContainer = document.querySelector(".game-container");
+      gameboardCopy.forEach((item, index) => {
+        const cell = document.createElement("div");
+        cell.innerText = item || "";
+        cell.classList.add("cell");
+        cell.addEventListener("click", () => {
+          playTurn(index);
+          gameContainer.innerHTML = "";
+          printBoard();
+        });
+        gameContainer.appendChild(cell);
+      });
     };
 
     // Resetting the game
@@ -124,4 +136,4 @@ const GameController = (function () {
   };
 })();
 
-export { GameController };
+export { GameController, Gameboard };
